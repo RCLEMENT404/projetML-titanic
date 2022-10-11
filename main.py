@@ -16,9 +16,9 @@ def affichageResultat():
 
 random_state = 42
 
-data = pd.read_csv('HR-Employee-Attrition.csv')
+data = pd.read_csv('water_potability.csv')
 print(data.shape)
-sns.countplot(x=data["Attrition"])
+sns.countplot(x=data)
 plt.show()
 data = data.drop(columns=['Over18', 'StandardHours', 'EmployeeNumber', 'EmployeeCount'])
 print(data.shape)
