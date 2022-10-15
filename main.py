@@ -29,11 +29,11 @@ def affichage_resultat(y_true, y_pred, result_type):
 
 random_state = 42
 
-data = pd.read_csv('HR-Employee-Attrition.csv')
+data = pd.read_csv('Titanic_Research_v6.csv', sep=';')
 print(data.shape)
-sns.countplot(x=data["Attrition"])
+sns.countplot(x=data["survived"])
 plt.show()
-data = data.drop(columns=['Over18', 'StandardHours', 'EmployeeNumber', 'EmployeeCount'])
+data = data.drop(columns=['body'])
 print(data.shape)
 
 print(data.dtypes)
@@ -46,62 +46,48 @@ for i in categorical_col.columns:
     data[i] = le.transform(data[i])
 print(data.shape)
 
-X = data.drop(columns='Attrition')
-y = data["Attrition"]
+X = data.drop(columns='survived')
+y = data["survived"]
+plt.show()
 print(X.shape)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, train_size=0.7, random_state=random_state)
 
 print(X_train.shape)
 print(X_test.shape)
+print(data.isnull().sum())
 
-classifier = DecisionTreeClassifier(random_state=random_state)
-classifier.fit(X_train, y_train)
-y_pred_train = classifier.predict(X_train)
-affichage_resultat(y_train, y_pred_train, 'Train')
-y_pred_test = classifier.predict(X_test)
-affichage_resultat(y_test, y_pred_test, 'Test')
-
-max_depth_range = range(1, 100)
-max_samples_range = range(2, 10)
-param_grid = {'criterion': ["gini", "entropy"], 'splitter': ["best", "random"], 'max_depth': max_depth_range,
-              'min_samples_split': max_samples_range, 'min_samples_leaf': max_samples_range,
-              'random_state': [random_state]}
-clf = GridSearchCV(DecisionTreeClassifier(), param_grid, scoring="accuracy", n_jobs=-1, verbose=1, cv=3)
+max_depth_range = [5]
+param_grid = {'criterion': ["gini"], 'splitter': ["best"], 'max_depth': max_depth_range}
+clf = GridSearchCV(DecisionTreeClassifier(random_state=random_state), param_grid, scoring="accuracy", n_jobs=-1,
+                   verbose=1, cv=3)
 clf.fit(X_train, y_train)
 best_params_list = clf.best_params_
 print(best_params_list)
 classifier = DecisionTreeClassifier(criterion=best_params_list['criterion'], max_depth=best_params_list['max_depth'],
-                                    min_samples_split=best_params_list['min_samples_split'],
-                                    min_samples_leaf=best_params_list['min_samples_leaf'],
                                     splitter=best_params_list['splitter'], random_state=random_state)
 classifier.fit(X_train, y_train)
 y_pred_train = classifier.predict(X_train)
 affichage_resultat(y_train, y_pred_train, 'Train')
 y_pred_test = classifier.predict(X_test)
 affichage_resultat(y_test, y_pred_test, 'Test')
-plot_tree(classifier)
-plt.savefig("Tree.png")
+plot_tree(classifier, feature_names=X.columns, filled=True, rounded=True)
+plt.savefig("Tree.svg")
 plt.show()
 
-classifier = RandomForestClassifier(random_state=random_state, n_estimators=100)
-classifier.fit(X_train, y_train)
-y_pred_train = classifier.predict(X_train)
-affichage_resultat(y_train, y_pred_train, 'Train')
-y_pred_test = classifier.predict(X_test)
-affichage_resultat(y_test, y_pred_test, 'Test')
-
-param_grid = {'criterion': ["gini", "entropy"], 'max_depth': max_depth_range,
-              'min_samples_split': max_samples_range, 'min_samples_leaf': max_samples_range,
-              'random_state': [random_state]}
-clf = GridSearchCV(RandomForestClassifier(), param_grid, scoring="accuracy", n_jobs=-1, verbose=1, cv=3)
+param_grid = {'criterion': ["gini", "entropy"], 'max_depth': max_depth_range}
+clf = GridSearchCV(RandomForestClassifier(random_state=random_state), param_grid, scoring="accuracy", n_jobs=-1,
+                   verbose=1, cv=3)
 clf.fit(X_train, y_train)
 best_params_list = clf.best_params_
 print(best_params_list)
 classifier = RandomForestClassifier(criterion=best_params_list['criterion'], max_depth=best_params_list['max_depth'],
-                                    min_samples_split=best_params_list['min_samples_split'],
-                                    min_samples_leaf=best_params_list['min_samples_leaf'], random_state=random_state)
+                                    random_state=random_state)
 classifier.fit(X_train, y_train)
 y_pred_train = classifier.predict(X_train)
 affichage_resultat(y_train, y_pred_train, 'Train')
 y_pred_test = classifier.predict(X_test)
 affichage_resultat(y_test, y_pred_test, 'Test')
+
+# plot_tree(classifier)
+# plt.savefig("Forest.svg")
+# plt.show()
