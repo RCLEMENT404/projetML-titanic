@@ -15,6 +15,7 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 
+<<<<<<< Updated upstream
 def affichage_resultat(y_true, y_pred, result_type):
     print(str(result_type) + ' Result:\n')
     print('===================================================')
@@ -25,10 +26,18 @@ def affichage_resultat(y_true, y_pred, result_type):
     print('___________________________________________________')
     print('Confusion Matrix:')
     print(confusion_matrix(y_pred, y_true))
+=======
+# def affichageResultat():
+#     print('Test Result:\n')
+#     print('===================================================')
+#     print('Accuracy Score: ' + str(accuracy_score(X_train)) + ' %')
+#     print('___________________________________________________')
+>>>>>>> Stashed changes
 
 
 random_state = 42
 
+<<<<<<< Updated upstream
 data = pd.read_csv('Titanic_Research_v6.csv', sep=';')
 print(data.shape)
 sns.countplot(x=data["survived"])
@@ -91,3 +100,33 @@ affichage_resultat(y_test, y_pred_test, 'Test')
 # plot_tree(classifier)
 # plt.savefig("Forest.svg")
 # plt.show()
+=======
+data = pd.read_csv('Titanic_Research_v6.csv')
+# print(data.shape)
+# sns.countplot(x=data)
+plt.show()
+# data = data.drop(columns=['Over18', 'StandardHours', 'EmployeeNumber', 'EmployeeCount'])
+# print(data.shape)
+
+print(data.dtypes)
+
+# categorical_col = data.select_dtypes('object')
+#
+# for i in categorical_col.columns:
+#     le = preprocessing.LabelEncoder()
+#     le.fit_transform(categorical_col[i])
+#     data[i] = le.transform(data[i])
+# print(data.shape)
+#
+# X = data.drop(columns='Attrition')
+# y = data["Attrition"]
+# print(X.shape)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, train_size=0.7, random_state=random_state)
+#
+# print(X_train.shape)
+# print(X_test.shape)
+#
+# classifier = DecisionTreeClassifier(random_state=random_state).fit(X_train, y_train)
+#
+# # accuracy_score(X_train)
+>>>>>>> Stashed changes
