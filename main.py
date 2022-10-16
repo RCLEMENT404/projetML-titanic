@@ -12,7 +12,7 @@ from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 
 def affichage_resultat(y_true, y_pred, result_type):
@@ -24,7 +24,11 @@ def affichage_resultat(y_true, y_pred, result_type):
     print(classification_report(y_true, y_pred))
     print('___________________________________________________')
     print('Confusion Matrix:')
-    print(confusion_matrix(y_pred, y_true))
+    cmatrix = confusion_matrix(y_pred, y_true)
+    print(cmatrix)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cmatrix)
+    disp.plot()
+    plt.show()
 
 
 random_state = 42
@@ -33,7 +37,7 @@ data = pd.read_csv('Titanic_Research_v6.csv', sep=';')
 print(data.shape)
 sns.countplot(x=data["survived"])
 plt.show()
-data = data.drop(columns=['body'])
+data = data.drop(columns=['body', 'boat', 'ticket', 'fare', 'name', 'home.dest', 'embarked'])
 print(data.shape)
 
 print(data.dtypes)
@@ -56,8 +60,8 @@ print(X_train.shape)
 print(X_test.shape)
 print(data.isnull().sum())
 
-max_depth_range = [5]
-param_grid = {'criterion': ["gini"], 'splitter': ["best"], 'max_depth': max_depth_range}
+max_depth_range = range(2,10)
+param_grid = {'criterion': ["gini", "entropy"], 'splitter': ["best"], 'max_depth': max_depth_range}
 clf = GridSearchCV(DecisionTreeClassifier(random_state=random_state), param_grid, scoring="accuracy", n_jobs=-1,
                    verbose=1, cv=3)
 clf.fit(X_train, y_train)
